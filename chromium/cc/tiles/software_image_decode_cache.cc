@@ -27,6 +27,7 @@
 #include "third_party/skia/include/core/SkImage.h"
 #include "third_party/skia/include/core/SkPixmap.h"
 #include "ui/gfx/skia_util.h"
+#include "base/sys_info.h"
 
 using base::trace_event::MemoryAllocatorDump;
 using base::trace_event::MemoryDumpLevelOfDetail;
@@ -199,7 +200,8 @@ SoftwareImageDecodeCache::SoftwareImageDecodeCache(
       at_raster_decoded_images_(ImageMRUCache::NO_AUTO_EVICT),
       locked_images_budget_(locked_memory_limit_bytes),
       format_(format),
-      max_items_in_cache_(kNormalMaxItemsInCache) {
+      max_items_in_cache_(kNormalMaxItemsInCache),
+      decoded_image_size_(0) {
   // In certain cases, ThreadTaskRunnerHandle isn't set (Android Webview).
   // Don't register a dump provider in these cases.
   if (base::ThreadTaskRunnerHandle::IsSet()) {
@@ -799,6 +801,18 @@ void SoftwareImageDecodeCache::UnrefAtRasterImage(const ImageKey& key) {
 
 void SoftwareImageDecodeCache::ReduceCacheUsageUntilWithinLimit(size_t limit) {
   TRACE_EVENT0("cc", "SoftwareImageDecodeCache::ReduceCacheUsage");
+
+  if (decoded_image_size_ != decoded_images_.size()) {
+    LOG(INFO)<<"["<<__FUNCTION__<<"] ["<<this<<"] decoded=["<<decoded_images_.size()
+      <<"] limit=["<<limit<<"]";
+    std::vector<uint32_t> image_ids;
+    auto it = decoded_images_.begin();
+    for (; it != decoded_images_.end(); ++it)
+      image_ids.push_back(it->first.image_id());
+    decoded_image_size_ = decoded_images_.size();
+    base::SysInfo::DumpSkImage(image_ids);
+  }
+
   size_t num_to_remove =
       (decoded_images_.size() > limit) ? (decoded_images_.size() - limit) : 0;
   for (auto it = decoded_images_.rbegin();

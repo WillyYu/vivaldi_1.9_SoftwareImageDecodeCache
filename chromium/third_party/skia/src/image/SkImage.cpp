@@ -33,6 +33,8 @@
 #include "SkImage_Gpu.h"
 #endif
 
+#include "base/sys_info.h"
+
 SkImage::SkImage(int width, int height, uint32_t uniqueID)
     : fWidth(width)
     , fHeight(height)
@@ -40,6 +42,11 @@ SkImage::SkImage(int width, int height, uint32_t uniqueID)
 {
     SkASSERT(width > 0);
     SkASSERT(height > 0);
+    base::SysInfo::IncSkImage(uniqueID);
+}
+
+SkImage::~SkImage() {
+    base::SysInfo::DecSkImage(fUniqueID);
 }
 
 bool SkImage::peekPixels(SkPixmap* pm) const {

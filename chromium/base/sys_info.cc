@@ -64,4 +64,51 @@ base::TimeDelta SysInfo::Uptime() {
   return base::TimeDelta::FromMicroseconds(uptime_in_microseconds);
 }
 
+static std::map<uint32_t, int>* g_uniqueId_map = new std::map<uint32_t, int>();
+static base::Lock* lock = new Lock();
+
+void SysInfo::IncSkImage(uint32_t uniqueId) {
+  AutoLock hold(*lock);
+  std::map<uint32_t, int>::iterator it = g_uniqueId_map->find(uniqueId);
+  if (it == g_uniqueId_map->end()) {
+    (*g_uniqueId_map)[uniqueId] = 1;
+  } else {
+    int ref = it->second;
+    (*g_uniqueId_map)[uniqueId] = ref + 1;
+  }
+
+}
+
+void SysInfo::DecSkImage(uint32_t uniqueId) {
+  AutoLock hold(*lock);
+  std::map<uint32_t, int>::iterator it = g_uniqueId_map->find(uniqueId);
+  if (it != g_uniqueId_map->end()) {
+    int ref = it->second;
+    ref--;
+    LOG(INFO)<<"["<<__FUNCTION__<<"] ["<<uniqueId<<"] ["<<ref<<"]";
+    if (ref == 0) {
+      g_uniqueId_map->erase(uniqueId);
+    } else {
+      (*g_uniqueId_map)[uniqueId] = ref;
+    }
+  }
+}
+
+void SysInfo::DumpSkImage(std::vector<uint32_t>& decoded_image_ids) {
+  AutoLock hold(*lock);
+  int miss = 0;
+  std::vector<uint32_t>::iterator dit = decoded_image_ids.begin();
+  for (; dit != decoded_image_ids.end(); ++dit) {
+    std::map<uint32_t, int>::iterator mit = g_uniqueId_map->find(*dit);
+    bool found = mit != g_uniqueId_map->end();
+    if (!found)
+      miss++;
+  }
+  LOG(INFO)<<"["<<__FUNCTION__<<"] miss=["<<miss
+    <<"] used=["<<(decoded_image_ids.size() - miss)<<"] total=["
+    <<decoded_image_ids.size()<<"]";
+}
+  /// ------------------
+
+
 }  // namespace base

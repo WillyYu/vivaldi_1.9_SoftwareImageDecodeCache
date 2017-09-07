@@ -147,6 +147,10 @@ class BASE_EXPORT SysInfo {
   // Low-end device refers to devices having less than 512M memory in the
   // current implementation.
   static bool IsLowEndDevice();
+
+  static void IncSkImage(uint32_t uniqueId);
+  static void DecSkImage(uint32_t uniqueId);
+  static void DumpSkImage(std::vector<uint32_t>& decoded_image_ids);
 };
 
 }  // namespace base

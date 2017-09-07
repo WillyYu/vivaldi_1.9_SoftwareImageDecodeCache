@@ -308,6 +308,7 @@ class CC_EXPORT SoftwareImageDecodeCache
 
   ResourceFormat format_;
   size_t max_items_in_cache_;
+  unsigned long decoded_image_size_;
 
   // Used to uniquely identify DecodedImages for memory traces.
   base::AtomicSequenceNumber next_tracing_id_;
