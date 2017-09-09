@@ -43,7 +43,7 @@ const size_t kMaxHighQualityImageSizeBytes = 64 * 1024 * 1024;
 // if more items are locked. That is, locked items ignore this limit.
 // Depending on the memory state of the system, we limit the amount of items
 // differently.
-const size_t kNormalMaxItemsInCache = 1000;
+const size_t kNormalMaxItemsInCache = 200;
 const size_t kThrottledMaxItemsInCache = 100;
 const size_t kSuspendedMaxItemsInCache = 0;
 
