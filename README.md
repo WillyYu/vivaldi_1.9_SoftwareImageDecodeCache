@@ -47,6 +47,7 @@ Basically, the lifecycle of Image resource is:
 I have tried to do a experiment with this <a href="https://github.com/WillyYu/vivaldi_1.9_SoftwareImageDecodeCache/commit/a20af56564123289589b87382303897603b15ede">commit</a>, which can trace the lifecycle of image resource and compare with decoded data in the cache. So that we can trace how many resources are in use.
 
 The result show as below.
+
 <img src="https://github.com/WillyYu/vivaldi_1.9_SoftwareImageDecodeCache/blob/master/images/QuantityDecodeCacheInUse.png?raw=true"/>
 
 We can find that the count of image resources in use is under 200, even reach the cache limit.
