@@ -48,7 +48,7 @@ I have tried to do a experiment with this <a href="https://github.com/WillyYu/vi
 
 The result show as below.
 
-<img src="https://github.com/WillyYu/vivaldi_1.9_SoftwareImageDecodeCache/blob/master/images/QuantityDecodeCacheInUse.png?raw=true"/>
+<img src="https://raw.githubusercontent.com/WillyYu/vivaldi_1.9_SoftwareImageDecodeCache/252c8b5f13e3221327d7846d38d9083bd840247f/images/QuantityDecodeCacheInUse.png"/>
 
 We can find that the count of image resources in use is under 200, even reach the cache limit.
 
